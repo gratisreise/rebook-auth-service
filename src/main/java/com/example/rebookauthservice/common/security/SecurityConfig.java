@@ -41,7 +41,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
             .formLogin(AbstractHttpConfigurer::disable)  // 폼 로그인 비활성화
             .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
-            // 요청 정책
+            // 요청정책 => 이미 앞에서 검증 된 놈들
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(WHITELISTED_URLS).permitAll() // 해당 url 허용
                 .anyRequest().authenticated() // 나머지 접근 방지

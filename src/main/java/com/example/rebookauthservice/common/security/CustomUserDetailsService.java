@@ -1,6 +1,5 @@
 package com.example.rebookauthservice.common.security;
 
-import com.example.rebookauthservice.exception.CMissingDataException;
 import com.example.rebookauthservice.domain.model.entity.AuthUser;
 import com.example.rebookauthservice.domain.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AuthRepository authRepository;
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

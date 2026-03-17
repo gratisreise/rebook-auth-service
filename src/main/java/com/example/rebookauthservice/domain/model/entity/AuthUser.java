@@ -34,7 +34,7 @@ public class AuthUser {
     @Column(unique = true, length = 200)
     private String userId;
 
-    @Column(unique = true, length = 40)
+    @Column(unique = true, length = 100)
     private String username;
 
     @Column(length = 70)
@@ -56,5 +56,10 @@ public class AuthUser {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+
+    public boolean isEmpty(){
+        return this.id == null;
+    }
 
 }

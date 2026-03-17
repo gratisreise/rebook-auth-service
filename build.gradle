@@ -1,18 +1,18 @@
 
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.13'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'java' // 자바 프로젝트로 인식
+    id 'org.springframework.boot' version "${springBootVersion}" // 스프링 부트 플러그인
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}" // 의존성 버전 일괄 관리
     id 'jacoco'
     id 'com.google.protobuf' version '0.9.4'
 }
 
-group = 'com.auth'
-version = '0.0.1'
+group = 'com.auth' // 프로젝트 그룹(패키지 네임)
+version = projectVersion // 프로젝트 버전
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17) // 자바 17 사용
+        languageVersion = JavaLanguageVersion.of(17) // 자바 버전 사용
     }
 }
 
@@ -23,81 +23,6 @@ configurations {
 }
 
 // 의존성 저장소 설정 (중앙 저장소 사용)
-repositories {
-    mavenCentral()
-}
-
-// 프로젝트에서 사용할 외부 변수(버전) 선언
-ext {
-    set('sentryVersion', "8.13.2") // Sentry 버전 변수
-    set('springCloudVersion', "2023.0.5") // Spring Cloud BOM 버전 변수
-}
-
-dependencies {
-    // ====== 모니터링 및 장애 추적 ======
-    implementation 'org.springframework.boot:spring-boot-starter-actuator' // 모니터링/헬스체크
-    implementation 'io.sentry:sentry-spring-boot-starter-jakarta' // Sentry 연동 (에러 트래킹)
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
-    // ====== 웹 및 REST API ======
-    implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 MVC (REST API)
-    implementation 'org.springframework.boot:spring-boot-starter-security' // 인증 & 인가
-    implementation 'org.springframework.boot:spring-boot-starter-validation' // Bean Validation
-
-
-    // ====== 데이터베이스 및 JPA ======
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA (DB 연동)
-    runtimeOnly 'org.postgresql:postgresql' // PostgreSQL JDBC 드라이버
-
-
-    //공통라이브러리
-    implementation "com.rebook:passport-common:1.0.0"
-
-
-    // ====== 클라우드/마이크로서비스 연동 ======
-    implementation 'org.springframework.cloud:spring-cloud-starter-config' // Spring Cloud Config 클라이언트
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // Eureka 서비스 디스커버리 클라이언트
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // OpenFeign (HTTP 클라이언트)
-
-    //프로토버프
-    implementation 'com.google.protobuf:protobuf-java:3.25.2'
-
-
-    // ===== 캐싱 ====
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-
-    // ===== jwt ====
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5' // JSON 변환을 위해 필요
-
-    // ====== 개발 편의성 ======
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // ====== 테스트 ======
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.amqp:spring-rabbit-test' // RabbitMQ 테스트 유틸리티
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처 (테스트 실행)
-}
-
-// 의존성 버전 일괄 관리(BOM) 설정
-dependencyManagement {
-    imports {
-        mavenBom "io.sentry:sentry-bom:${sentryVersion}"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
-
-// 테스트 실행 시 JUnit Platform 사용
-tasks.named('test') {
-    useJUnitPlatform()
-    finalizedBy 'jacocoTestReport' // 테스트 후 리포트 생성
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -112,6 +37,65 @@ repositories {
     flatDir {
         dirs "libs"
     }
+}
+
+dependencies {
+    // ====== 웹 및 REST API ======
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // ====== 공통라이브러리 ======
+    implementation 'com.rebook:common-core:1.0.0'
+    implementation 'com.rebook:common-db:1.0.0'
+    implementation 'com.rebook:common-auth:1.0.2'
+    implementation 'com.rebook:common-autoconfigure:1.0.1'
+
+    // ====== 데이터베이스 및 JPA ======
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // ====== 모니터링 및 장애 추적 ======
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' // 모니터링/헬스체크
+    implementation 'io.sentry:sentry-spring-boot-starter-jakarta' // Sentry 연동 (에러 트래킹)
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // ====== 클라우드/마이크로서비스 연동 ======
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // Spring Cloud Config 클라이언트
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // Eureka 서비스 디스커버리 클라이언트
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // OpenFeign (HTTP 클라이언트)
+
+    // ====== 캐싱 ======
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // ====== Protobuf ======
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+
+    // ====== JWT ======
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+
+    // ====== 테스트 & 유틸 ======
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 의존성 버전 일괄 관리(BOM) 설정
+dependencyManagement {
+    imports {
+        mavenBom "io.sentry:sentry-bom:${sentryVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport' // 테스트 후 리포트 생성
 }
 
 jacocoTestReport {

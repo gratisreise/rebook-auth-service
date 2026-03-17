@@ -1,12 +1,11 @@
 package com.example.rebookauthservice.domain.service;
 
-import com.example.rebookauthservice.exception.AuthUserDataMissedException;
-import com.example.rebookauthservice.exception.CMissingDataException;
+import com.example.rebookauthservice.common.exception.AuthException;
 import com.example.rebookauthservice.domain.model.entity.AuthUser;
 import com.example.rebookauthservice.domain.repository.AuthRepository;
-import com.example.rebookauthservice.common.security.JwtUtil;
-import com.rebook.passport.HmacUtil;
-import com.rebook.passport.PassportProto;
+import com.example.rebookauthservice.common.security.JwtProvider;
+import com.rebook.common.auth.HmacUtil;
+import com.rebook.common.auth.PassportProto;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PassportService {
 
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
     private final AuthRepository authRepository;
     private final HmacUtil hmacUtil;
 
@@ -28,9 +27,9 @@ public class PassportService {
     //패스포트 발급
     public String issuePassport(String token) {
         if(token == null || token.isBlank()){
-            throw new CMissingDataException("토큰이 비어있습니다.");
+            throw AuthException.unknown("토큰이 비어있습니다.");
         }
-        String userId = jwtUtil.getAccessUserId(token);
+        String userId = jwtProvider.getAccessUserId(token);
 
         return generatePassport(userId);
     }
@@ -39,7 +38,7 @@ public class PassportService {
     private String generatePassport(String userId){
 
         AuthUser user = authRepository.findByUserId(userId)
-            .orElseThrow(AuthUserDataMissedException::new);
+            .orElseThrow(() -> AuthException.unknown("사용자를 찾을 수 없습니다."));
 
         long now = Instant.now().getEpochSecond();
 

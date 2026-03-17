@@ -1,25 +1,21 @@
 package com.example.rebookauthservice.domain.controller;
 
 
-import com.example.rebookauthservice.common.CommonResult;
-import com.example.rebookauthservice.common.ResponseService;
-import com.example.rebookauthservice.common.SingleResult;
-import com.example.rebookauthservice.domain.model.dto.LoginRequest;
-import com.example.rebookauthservice.domain.model.dto.OAuthRequest;
-import com.example.rebookauthservice.domain.model.dto.RefreshRequest;
-import com.example.rebookauthservice.domain.model.dto.RefreshResponse;
-import com.example.rebookauthservice.domain.model.dto.SignUpRequest;
-import com.example.rebookauthservice.domain.model.dto.TokenResponse;
-import com.example.rebookauthservice.domain.repository.AuthRepository;
+import com.example.rebookauthservice.domain.model.dto.request.LoginRequest;
+import com.example.rebookauthservice.domain.model.dto.request.OAuthRequest;
+import com.example.rebookauthservice.domain.model.dto.request.RefreshRequest;
+import com.example.rebookauthservice.domain.model.dto.request.SignUpRequest;
+import com.example.rebookauthservice.domain.model.dto.response.TokenResponse;
 import com.example.rebookauthservice.domain.service.AuthService;
-import com.example.rebookauthservice.domain.service.oauth.OAuthService;
-import com.example.rebookauthservice.domain.service.oauth.OAuthServiceFactory;
+import com.rebook.common.core.response.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,8 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final OAuthServiceFactory oAuthServiceFactory;
-    private final AuthRepository authRepository;
 
     //test
     @GetMapping
@@ -41,28 +35,36 @@ public class AuthController {
 
     //회원가입
     @PostMapping("/sign-up")
-    public CommonResult signUp(@Valid @RequestBody SignUpRequest request){
+    public ResponseEntity<SuccessResponse<Void>> signUp(@Valid @RequestBody SignUpRequest request){
         authService.signUp(request);
-        return ResponseService.getSuccessResult();
+        return SuccessResponse.toNoContent();
     }
 
     //로그인
     @PostMapping("/login")
-    public SingleResult<TokenResponse> login(@Valid @RequestBody LoginRequest request){
-        return ResponseService.getSingleResult(authService.login(request));
+    public ResponseEntity<SuccessResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest request){
+        return SuccessResponse.toOk(authService.login(request));
     }
 
+
     //소셜로그인
-    @GetMapping("/oauth/login")
-    public SingleResult<TokenResponse> socialLogin(@Valid @RequestBody OAuthRequest request){
-        OAuthService oauthService = oAuthServiceFactory.getOAuthService(request.provider());
-        return ResponseService.getSingleResult(oauthService.login(request));
+    @PostMapping("/oauth/login")
+    public ResponseEntity<SuccessResponse<TokenResponse>> socialLogin(@Valid @RequestBody OAuthRequest request){
+        return SuccessResponse.toOk(authService.oauthLogin(request));
+    }
+
+    //로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<SuccessResponse<TokenResponse>> logout(
+        @RequestHeader("Authorization") String accessToken) {
+        authService.logout(accessToken);
+        return SuccessResponse.toNoContent();
     }
 
     //리프레쉬
-    @GetMapping("/refresh")
-    public SingleResult<RefreshResponse> refresh(@Valid @RequestBody RefreshRequest request) {
-        return ResponseService.getSingleResult(authService.refresh(request.refreshToken()));
+    @PostMapping("/refresh")
+    public ResponseEntity<SuccessResponse<TokenResponse>> refresh(@Valid @RequestBody RefreshRequest request) {
+        return SuccessResponse.toOk(authService.refresh(request.refreshToken()));
     }
 
 }

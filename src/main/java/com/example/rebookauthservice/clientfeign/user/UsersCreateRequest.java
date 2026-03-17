@@ -1,6 +1,7 @@
 package com.example.rebookauthservice.clientfeign.user;
 
-import com.example.rebookauthservice.domain.model.dto.SignUpRequest;
+import com.example.rebookauthservice.domain.model.dto.request.OAuthRequest;
+import com.example.rebookauthservice.domain.model.dto.request.SignUpRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -20,6 +21,13 @@ public record UsersCreateRequest (
         return UsersCreateRequest.builder()
             .email(request.email())
             .nickname(request.nickname())
+            .build();
+    }
+
+    public static UsersCreateRequest from(OAuthRequest request){
+        return UsersCreateRequest.builder()
+            .email(request.getEmail())
+            .nickname(request.getNickname())
             .build();
     }
 }
