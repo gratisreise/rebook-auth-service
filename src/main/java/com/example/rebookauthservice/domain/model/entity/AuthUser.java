@@ -1,5 +1,6 @@
 package com.example.rebookauthservice.domain.model.entity;
 
+import com.example.rebookauthservice.common.enums.OauthProvider;
 import com.example.rebookauthservice.common.enums.Provider;
 import com.example.rebookauthservice.common.enums.Role;
 import jakarta.persistence.Column;
@@ -45,7 +46,7 @@ public class AuthUser {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    private Provider provider;
+    private OauthProvider provider;
 
     @Column(length = 300)
     private String providerId;

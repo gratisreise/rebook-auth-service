@@ -1,6 +1,7 @@
 package com.example.rebookauthservice.common.annotation;
 
 
+import com.example.rebookauthservice.common.enums.OauthProvider;
 import com.example.rebookauthservice.common.enums.Provider;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,5 +13,5 @@ import org.springframework.stereotype.Component;
 @Retention(RetentionPolicy.RUNTIME)
 @Component
 public @interface OAuthServiceType {
-    Provider value();
+    OauthProvider value();
 }

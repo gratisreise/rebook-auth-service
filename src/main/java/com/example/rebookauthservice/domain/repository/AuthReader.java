@@ -1,9 +1,8 @@
-package com.example.rebookauthservice.domain.service.reader;
+package com.example.rebookauthservice.domain.repository;
 
 import com.example.rebookauthservice.common.enums.Provider;
 import com.example.rebookauthservice.common.exception.AuthException;
 import com.example.rebookauthservice.domain.model.entity.AuthUser;
-import com.example.rebookauthservice.domain.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

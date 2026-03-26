@@ -7,6 +7,8 @@ import com.example.rebookauthservice.domain.model.dto.request.RefreshRequest;
 import com.example.rebookauthservice.domain.model.dto.request.SignUpRequest;
 import com.example.rebookauthservice.domain.model.dto.response.TokenResponse;
 import com.example.rebookauthservice.domain.service.AuthService;
+import com.example.rebookauthservice.domain.service.oauth.OAuthService;
+import com.example.rebookauthservice.domain.service.oauth.OAuthServiceFactory;
 import com.rebook.common.core.response.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final OAuthServiceFactory oAuthServiceFactory;
 
     //test
     @GetMapping
@@ -50,7 +53,8 @@ public class AuthController {
     //소셜로그인
     @PostMapping("/oauth/login")
     public ResponseEntity<SuccessResponse<TokenResponse>> socialLogin(@Valid @RequestBody OAuthRequest request){
-        return SuccessResponse.toOk(authService.oauthLogin(request));
+        OAuthService oAuthService = oAuthServiceFactory.getOAuthService(request.provider());
+        return SuccessResponse.toOk(oAuthService.authenticate(request));
     }
 
     //로그아웃
