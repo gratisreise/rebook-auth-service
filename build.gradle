@@ -3,6 +3,7 @@ plugins {
     id 'java' // 자바 프로젝트로 인식
     id 'org.springframework.boot' version "${springBootVersion}" // 스프링 부트 플러그인
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}" // 의존성 버전 일괄 관리
+    id 'com.diffplug.spotless' version "${spotlessVersion}"
     id 'jacoco'
     id 'com.google.protobuf' version '0.9.4'
 }

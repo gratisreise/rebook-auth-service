@@ -24,10 +24,11 @@ public record UsersCreateRequest (
             .build();
     }
 
-    public static UsersCreateRequest from(OAuthRequest request){
+    public static UsersCreateRequest of(String email,  String nickname){
         return UsersCreateRequest.builder()
-            .email(request.getEmail())
-            .nickname(request.getNickname())
+            .email(email)
+            .nickname(nickname)
             .build();
     }
+
 }

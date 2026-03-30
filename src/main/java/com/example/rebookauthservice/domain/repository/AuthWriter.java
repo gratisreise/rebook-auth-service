@@ -1,7 +1,6 @@
-package com.example.rebookauthservice.domain.service.writer;
+package com.example.rebookauthservice.domain.repository;
 
 import com.example.rebookauthservice.domain.model.entity.AuthUser;
-import com.example.rebookauthservice.domain.repository.AuthRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,5 +13,10 @@ public class AuthWriter {
 
     public void save(AuthUser user) {
         authRepository.save(user);
+    }
+
+    public AuthUser saveOrUpdate(AuthUser authUser) {
+
+        return null;
     }
 }

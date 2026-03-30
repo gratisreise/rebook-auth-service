@@ -29,13 +29,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-        AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception{
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         return http
             .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화

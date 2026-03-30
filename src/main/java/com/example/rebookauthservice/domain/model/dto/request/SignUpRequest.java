@@ -32,8 +32,8 @@ public record SignUpRequest(
             .userId(userId)
             .username(username)
             .password(encoder.encode(password))
-            .role(Role.USER) // 로그인에서 가입가능한 유저는 admin이 없다
-            .provider(Provider.LOCAL) //
+            .role(Role.USER)
+            .provider(Provider.LOCAL)
             .build();
     }
 }
